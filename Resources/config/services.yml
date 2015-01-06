@@ -1,0 +1,23 @@
+parameters:
+  undelete.likes.controller.class: Undelete\LikesBundle\Controller\LikeController
+
+services:
+  undelete.likes.helper:
+    class: Undelete\LikesBundle\Helper\LikeHelper
+    arguments: [@doctrine.orm.default_entity_manager, @security.context, %undelete.likes.entities%]
+
+  undelete.likes.controller:
+    class: %undelete.likes.controller.class%
+    arguments: [@doctrine.orm.default_entity_manager, @undelete.likes.helper]
+
+  undelete.likes.entity.mapping:
+    class: Undelete\LikesBundle\Mapping\Like
+    arguments: [%undelete.likes.user.class%]
+    tags:
+      - { name: doctrine.event_listener, event: loadClassMetadata }
+
+  undelete.likes.twig.extension:
+    class: Undelete\LikesBundle\Twig\LikeExtension
+    arguments: [@undelete.likes.helper]
+    tags:
+      - { name: twig.extension }

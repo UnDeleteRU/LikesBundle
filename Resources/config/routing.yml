@@ -1,0 +1,3 @@
+undelete_like:
+    path:     /like/{type}/{id}
+    defaults: { _controller: undelete.likes.controller:likeAction }

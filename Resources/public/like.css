@@ -1,0 +1,21 @@
+a.like {
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 16px;
+    color: #000;
+}
+
+a.like > * {
+    vertical-align: top;
+}
+
+a.like i {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(/bundles/undeletelikes/like.png) 0 0 / 16px 16px no-repeat;
+}
+
+a.like.active i {
+    background-image: url(/bundles/undeletelikes/like_active.png);
+}
