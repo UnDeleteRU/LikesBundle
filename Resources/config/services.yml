@@ -8,7 +8,7 @@ services:
 
   undelete.likes.controller:
     class: %undelete.likes.controller.class%
-    arguments: [@doctrine.orm.default_entity_manager, @undelete.likes.helper]
+    arguments: [@doctrine.orm.default_entity_manager, @undelete.likes.helper, @undelete.likes.event.dispatcher]
 
   undelete.likes.entity.mapping:
     class: Undelete\LikesBundle\Mapping\Like
@@ -21,3 +21,6 @@ services:
     arguments: [@undelete.likes.helper]
     tags:
       - { name: twig.extension }
+
+  undelete.likes.event.dispatcher:
+    class: Undelete\LikesBundle\Dispatcher\LikeEventDispatcher
