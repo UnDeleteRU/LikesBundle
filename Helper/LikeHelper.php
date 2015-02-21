@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Undelete\LikesBundle\Entity\Like;
 use Undelete\LikesBundle\Entity\LikeableInterface;
+use Undelete\LikesBundle\Exception\NoLikeAssociationException;
 
 class LikeHelper
 {
@@ -56,6 +57,8 @@ class LikeHelper
 
     public function countLikes(LikeableInterface $entity)
     {
+        $this->checkAssociation($entity);
+
         $qb = $this->createCountQueryBuilder($entity);
         $qb->innerJoin('e.likes', 'l');
         $this->addEntityFilter($qb, $entity);
@@ -68,6 +71,8 @@ class LikeHelper
         if (!$this->user) {
             return false;
         }
+
+        $this->checkAssociation($entity);
 
         $qb = $this->createCountQueryBuilder($entity);
         $this->addEntityAndUserFilter($qb, $entity);
@@ -82,6 +87,8 @@ class LikeHelper
         if (!$this->user) {
             return null;
         }
+
+        $this->checkAssociation($entity);
 
         $qb = $this->em->getRepository(get_class($entity))->createQueryBuilder('e');
         $qb->select('e.id, l.id as lid');
@@ -115,5 +122,21 @@ class LikeHelper
         $like->setUser($this->user);
 
         return $like;
+    }
+
+    protected function checkAssociation(LikeableInterface $entity)
+    {
+        $metadata = $this->em->getClassMetadata(get_class($entity));
+        $mapping = false;
+
+        if ($metadata->hasAssociation('likes')) {
+            $mapping = $metadata->getAssociationMapping('likes');
+        }
+
+        if (!$mapping || ($mapping['targetEntity'] != 'Undelete\LikesBundle\Entity\Like')) {
+            throw new NoLikeAssociationException(
+                sprintf('Association with like entity not found in entity %s', get_class($entity))
+            );
+        }
     }
 }
