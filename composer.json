@@ -1,0 +1,12 @@
+{
+  "name" : "undelete/likes-bundle",
+  "description" : "Symfony2 Like Bundle",
+  "type" : "symfony-bundle",
+  "require" : {
+    "php": ">=5.4.0",
+    "symfony/symfony": ">=2.1"
+  },
+  "autoload" : {
+    "psr-4" : { " Undelete\\LikesBundle\\" : "" }
+  }
+}
