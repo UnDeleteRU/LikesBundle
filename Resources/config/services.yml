@@ -1,5 +1,6 @@
 parameters:
   undelete.likes.controller.class: Undelete\LikesBundle\Controller\LikeController
+  undelete.likes.like.template: UndeleteLikesBundle::like.html.twig
 
 services:
   undelete.likes.helper:
@@ -18,7 +19,7 @@ services:
 
   undelete.likes.twig.extension:
     class: Undelete\LikesBundle\Twig\LikeExtension
-    arguments: [@undelete.likes.helper]
+    arguments: [@undelete.likes.helper, %undelete.likes.like.template%]
     tags:
       - { name: twig.extension }
 

@@ -10,9 +10,12 @@ class LikeExtension extends \Twig_Extension
     /* @var LikeHelper */
     private $helper;
 
-    public function __construct(LikeHelper $helper)
+    private $template;
+
+    public function __construct(LikeHelper $helper, $template)
     {
         $this->helper = $helper;
+        $this->template = $template;
     }
 
     public function getFilters()
@@ -20,14 +23,7 @@ class LikeExtension extends \Twig_Extension
         return [
             new \Twig_SimpleFilter(
                 'Likes',
-                function (\Twig_Environment $twig, LikeableInterface $entity) {
-                    return $twig->render('UndeleteLikesBundle::like.html.twig', [
-                        'count' => $this->helper->countLikes($entity),
-                        'type' => $this->helper->getType($entity),
-                        'id' => $entity->getId(),
-                        'active' => $this->helper->hasUserLike($entity)
-                    ]);
-                },
+                [$this, 'renderLikeTemplate'],
                 [
                     'needs_environment' => true,
                     'is_safe' => ['html'],
@@ -36,6 +32,15 @@ class LikeExtension extends \Twig_Extension
         ];
     }
 
+    public function renderLikeTemplate(\Twig_Environment $twig, LikeableInterface $entity)
+    {
+        return $twig->render($this->template, [
+            'count' => $this->helper->countLikes($entity),
+            'type' => $this->helper->getType($entity),
+            'id' => $entity->getId(),
+            'active' => $this->helper->hasUserLike($entity)
+        ]);
+    }
 
     public function getName()
     {
