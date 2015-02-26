@@ -35,5 +35,5 @@ undelete_likes:
 undelete_likes:
     ...
     classes:
-        article: Undelete\PagesBundle\Entity\Article
+        article: Acme\DemoBundle\Entity\Article
 ```
