@@ -8,11 +8,17 @@
 > "undelete/likes-bundle": "dev-master"
 
 Регестрируем бандл в AppKernel
-> new Undelete\LikesBundle\UndeleteLikesBundle(),
+``` php
+new Undelete\LikesBundle\UndeleteLikesBundle(),
+```
 
 Конфигурмруем
-> undelete_likes:
->    user: Acme\DemoBundle\Entity\User
+``` yaml
+# app/config/config.yml
+
+undelete_likes:
+    user: Acme\DemoBundle\Entity\User
+```
 
 Использование
 -------------
@@ -23,6 +29,11 @@
 * указать класс в конфиге бандла лайков
 
 Указываем классы в конфиге
-> undelete_likes:
->    classes:
->        article: Undelete\PagesBundle\Entity\Article
+``` yaml
+# app/config/config.yml
+
+undelete_likes:
+    ...
+    classes:
+        article: Undelete\PagesBundle\Entity\Article
+```
