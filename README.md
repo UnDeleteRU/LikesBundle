@@ -5,7 +5,9 @@
 ---------
 
 Установка через композер, добавляем в composer.json
-> "undelete/likes-bundle": "dev-master"
+``` json
+"undelete/likes-bundle": "dev-master"
+```
 
 Регестрируем бандл в AppKernel
 ``` php
