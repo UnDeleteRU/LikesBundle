@@ -2,10 +2,11 @@
 
 namespace Undelete\LikesBundle\Dispatcher;
 
+use Symfony\Component\EventDispatcher\Event;
 use Undelete\LikesBundle\Entity\Like;
 use Undelete\LikesBundle\Entity\LikeableInterface;
 
-class LikeEvent
+class LikeEvent extends Event
 {
     const ON_LIKE = 'onLike';
     const ON_LIKE_REMOVE = 'onLikeRemove';

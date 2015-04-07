@@ -3,12 +3,12 @@
 namespace Undelete\LikesBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Undelete\LikesBundle\Dispatcher\LikeEventDispatcher;
 use Undelete\LikesBundle\Dispatcher\LikeEvent;
 use Undelete\LikesBundle\Entity\Like;
 use Undelete\LikesBundle\Entity\LikeableInterface;
@@ -22,10 +22,10 @@ class LikeController
     /* @var EntityManager */
     protected $em;
 
-    /* @var LikeEventDispatcher */
+    /* @var EventDispatcherInterface */
     protected $dispatcher;
 
-    public function __construct(EntityManager $em, LikeHelper $likeHelper, LikeEventDispatcher $dispatcher)
+    public function __construct(EntityManager $em, LikeHelper $likeHelper, EventDispatcherInterface $dispatcher)
     {
         $this->likeHelper = $likeHelper;
         $this->em = $em;
@@ -58,7 +58,7 @@ class LikeController
             $this->em->flush();
 
             $event = new LikeEvent($like, $entity);
-            $this->dispatcher->dispatchEvent(LikeEvent::ON_LIKE_REMOVE, $event);
+            $this->dispatcher->dispatch(LikeEvent::ON_LIKE_REMOVE, $event);
         } else {
             $like = $this->likeHelper->createLike();
             $this->em->persist($like);
@@ -69,7 +69,7 @@ class LikeController
             $active = true;
 
             $event = new LikeEvent($like, $entity);
-            $this->dispatcher->dispatchEvent(LikeEvent::ON_LIKE, $event);
+            $this->dispatcher->dispatch(LikeEvent::ON_LIKE, $event);
         }
 
         $count = $this->likeHelper->countLikes($entity);
