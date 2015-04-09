@@ -16,18 +16,22 @@ class LikeHelper
     /* @var EntityManager */
     private $em;
 
-    private $user;
-
     private $types;
+
+    private $context;
 
     public function __construct(EntityManager $em, SecurityContext $context, array $types)
     {
         $this->em = $em;
-
-        $token = $context->getToken();
-        $this->user =  $token ? $token->getUser() : null;
-
+        $this->context = $context;
         $this->types = $types;
+    }
+
+    protected function getUser()
+    {
+        $token = $this->context->getToken();
+
+        return $token ? $token->getUser() : null;
     }
 
     protected function createCountQueryBuilder($entity)
@@ -45,7 +49,7 @@ class LikeHelper
 
         $builder
             ->innerJoin('e.likes', 'l', 'WITH', 'l.user = :user')
-            ->setParameter('user', $this->user);
+            ->setParameter('user', $this->getUser());
     }
 
     protected function addEntityFilter(QueryBuilder $builder, LikeableInterface $entity)
@@ -68,7 +72,7 @@ class LikeHelper
 
     public function hasUserLike(LikeableInterface $entity)
     {
-        if (!$this->user) {
+        if (!$this->getUser()) {
             return false;
         }
 
@@ -84,7 +88,7 @@ class LikeHelper
 
     public function getUserLike(LikeableInterface $entity)
     {
-        if (!$this->user) {
+        if (!$this->getUser()) {
             return null;
         }
 
@@ -101,7 +105,7 @@ class LikeHelper
 
     public function checkUser()
     {
-        if (!$this->user || !($this->user instanceof UserInterface)) {
+        if (!$this->getUser() || !($this->getUser() instanceof UserInterface)) {
             throw new AccessDeniedHttpException;
         }
     }
@@ -119,7 +123,7 @@ class LikeHelper
     public function createLike()
     {
         $like = new Like();
-        $like->setUser($this->user);
+        $like->setUser($this->getUser());
 
         return $like;
     }
