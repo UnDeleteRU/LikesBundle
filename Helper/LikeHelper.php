@@ -103,13 +103,6 @@ class LikeHelper
         return $like ? $this->em->getRepository('UndeleteLikesBundle:Like')->find($like['lid']) : null;
     }
 
-    public function checkUser()
-    {
-        if (!$this->getUser() || !($this->getUser() instanceof UserInterface)) {
-            throw new AccessDeniedHttpException;
-        }
-    }
-
     public function getType(LikeableInterface $entity)
     {
         return array_search(get_class($entity), $this->types);

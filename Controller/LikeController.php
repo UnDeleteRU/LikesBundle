@@ -25,16 +25,24 @@ class LikeController
     /* @var EventDispatcherInterface */
     protected $dispatcher;
 
-    public function __construct(EntityManager $em, LikeHelper $likeHelper, EventDispatcherInterface $dispatcher)
+    /* @var SecurityContext */
+    protected $context;
+
+    public function __construct(
+        EntityManager $em,
+        LikeHelper $likeHelper,
+        EventDispatcherInterface $dispatcher,
+        SecurityContext $context
+    )
     {
         $this->likeHelper = $likeHelper;
         $this->em = $em;
         $this->dispatcher = $dispatcher;
+        $this->context = $context;
     }
 
     public function likeAction($type, $id)
     {
-        $this->likeHelper->checkUser();
         $class = $this->likeHelper->getClassByType($type);
 
         if (!$class) {
@@ -49,6 +57,10 @@ class LikeController
 
         if (!$entity instanceof LikeableInterface) {
             throw new \Exception('Could not like Entity not implements Likeable interface');
+        }
+
+        if (!$this->context->isGranted('like', $entity)) {
+            throw new AccessDeniedHttpException;
         }
 
         $active = false;
